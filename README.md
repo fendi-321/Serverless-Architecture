@@ -27,11 +27,7 @@ You can open the files directly in a browser:
 - Terraform (`main.tf`) provisions the Lambda and DynamoDB resources.
 
 Make sure the Lambda Function URL is set correctly in `maffindi.html`:
-```html
-<script>
-  const apiUrl = 'https://t624g3agqumqbv6k4kvrw26mtm0qezsb.lambda-url.ap-southeast-1.on.aws/';
-</script>
-```
+
 Update with your own Function URL as needed.
 
 ## Git and GitHub
