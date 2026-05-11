@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My CV Project - Architecture Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #0ea5e9;
+            --text-light: #f8fafc;
+            --text-dark: #334155;
+            --text-gray: #64748b;
+            --bg-light: #f1f5f9;
+            --white: #ffffff;
+            --green: #22c55e;
+            --orange: #f97316;
+            --purple: #a855f7;
+            --pink: #e7157b;
+            --blue: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 30px 16px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 28px 32px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 1px solid #334155;
+        }
+        .header-icon {
+            background: var(--accent);
+            color: var(--white);
+            width: 44px; height: 44px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            font-size: 1.3rem;
+        }
+        .header h1 {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        .header p {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+        .content { padding: 28px 32px; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--text-gray);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 8px 8px 0 0;
+        }
+        .nav-tab:hover { color: var(--primary); background: #f8fafc; }
+        .nav-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: #f0f9ff;
+        }
+        .nav-tab i { margin-right: 6px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i { color: var(--accent); }
+
+        .diagram-container {
+            background: #0f172a;
+            border: 1px solid #1f2a44;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .info-card h4 { color: var(--primary); margin-bottom: 6px; font-size: 0.95rem; }
+        .info-card p { color: var(--text-gray); font-size: 0.85rem; }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+        .feature-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            transition: all 0.2s;
+        }
+        .feature-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(14,165,233,0.1); }
+        .feature-card h4 { font-size: 0.95rem; margin-bottom: 6px; }
+        .feature-card p { font-size: 0.82rem; color: var(--text-gray); }
+
+        .flow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            padding: 6px 14px 6px 6px;
+            font-size: 0.85rem;
+        }
+        .step-num {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .step-1 .step-num { background: var(--blue); }
+        .step-2 .step-num { background: var(--orange); }
+        .step-3 .step-num { background: var(--green); }
+        .step-4 .step-num { background: var(--purple); }
+        .step-5 .step-num { background: var(--pink); }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .tag {
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid #e2e8f0;
+        }
+        .tag-aws { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+        .tag-terraform { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+        .tag-python { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+        .tag-html { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+        .tag-cicd { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            border-top: 1px solid #e2e8f0;
+            background: #fafafa;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; padding: 20px; }
+            .content { padding: 16px; }
+            .diagram-container { padding: 10px; }
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="header-icon">🗺️</span>
+        <div>
+            <h1>My CV Project — Complete Architecture Overview</h1>
+            <p>End-to-end serverless architecture · Infrastructure as Code · CI/CD pipeline</p>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab(event, 'full-arch')">
+                <i class="fas fa-sitemap"></i> Full Architecture
+            </button>
+            <button class="nav-tab" onclick="switchTab(event, 'infra')">
+                <i class="fas fa-cloud"></i> Infrastructure
+            </button>
+            <button class="nav-tab" onclick="switchTab(event, 'cicd')">
+                <i class="fas fa-arrows-rotate"></i> CI/CD Pipeline
+            </button>
+        </div>
+
+        <!-- TAB 1: Full Architecture -->
+        <div id="full-arch" class="tab-content active">
+
+            <div class="info-card">
+                <h4><i class="fas fa-info-circle"></i> About This Architecture</h4>
+                <p>This project hosts a personal CV/resume website on AWS using a serverless architecture. The static site is served via CloudFront + S3, and a serverless visitor counter built with Lambda + DynamoDB provides real-time page visit tracking. All infrastructure is provisioned and managed through Terraform (IaC).</p>
+            </div>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    %%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true, 'fontFamily': 'Poppins', 'primaryColor': '#1e293b', 'primaryTextColor': '#f8fafc', 'primaryBorderColor': '#334155', 'lineColor': '#60a5fa', 'secondaryColor': '#0f172a', 'tertiaryColor': '#1e293b', 'clusterBkg': '#0f172a', 'clusterBorder': '#334155', 'nodeBorder': '#475569'}}}%%
+                    graph TB
+                        subgraph "👤 User Layer"
+                            Browser["🌐 User Browser"]
+                        end
+
+                        subgraph "☁️ AWS Cloud (ap-southeast-1)"
+                            subgraph "📦 Content Delivery"
+                                CF["CloudFront CDN"]
+                                OAC["Origin Access Control"]
+                                S3["S3 Bucket<br/>maffindi.html<br/>my pic.jpg"]
+                            end
+
+                            subgraph "⚡ Serverless Backend"
+                                LFU["Lambda Function URL"]
+                                Lambda["AWS Lambda<br/>visitor_counter.py<br/>(Python 3.9)"]
+                            end
+
+                            subgraph "🗄️ Data & Monitoring"
+                                DDB["DynamoDB<br/>Table: VisitorCount<br/>PK: id, Attr: visits"]
+                                CW["CloudWatch Logs"]
+                            end
+
+                            subgraph "🏗️ Infrastructure as Code"
+                                TF["Terraform<br/>main.tf"]
+                                IAM["IAM Role + Policy<br/>Lambda Execution"]
+                            end
+                        end
+
+                        subgraph "🔧 CI/CD Pipeline"
+                            Git["Git / GitHub"]
+                            Local["Local Dev<br/>(VS Code)"]
+                        end
+
+                        %% Connections - User to CloudFront
+                        Browser -->|"HTTPS Request"| CF
+                        CF -->|"Fetch from Origin"| OAC
+                        OAC -->|"s3:GetObject"| S3
+
+                        %% Visitor Counter Flow
+                        Browser -->|"1. fetch() GET"| LFU
+                        LFU -->|"Invoke"| Lambda
+                        Lambda -->|"2. UpdateItem + GetItem"| DDB
+                        Lambda -->|"3. Log execution"| CW
+                        Lambda -->|"4. JSON { count }"| LFU
+
+                        %% IaC Flow
+                        TF -->|"Provision"| S3
+                        TF -->|"Provision"| CF
+                        TF -->|"Provision"| Lambda
+                        TF -->|"Provision"| DDB
+                        TF -->|"Create"| IAM
+
+                        %% CI/CD
+                        Local -->|"git push"| Git
+                        Git -->|"Deploy"| TF
+
+                        %% Styling
+                        style Browser fill:#1e3a5f,stroke:#3b82f6,color:#fff
+                        style CF fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style OAC fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style S3 fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style LFU fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                        style Lambda fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                        style DDB fill:#1e1e2e,stroke:#3b48cc,color:#818cf8
+                        style CW fill:#1e1e2e,stroke:#e7157b,color:#f472b6
+                        style TF fill:#1e1e2e,stroke:#a855f7,color:#c084fc
+                        style IAM fill:#1e1e2e,stroke:#34d399,color:#6ee7b7
+                        style Git fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                        style Local fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                </div>
+            </div>
+
+            <!-- Request Flow Steps -->
+            <h3 class="section-title"><i class="fas fa-arrow-right"></i> Request Flow</h3>
+            <div class="flow-steps">
+                <div class="step step-1">
+                    <span class="step-num">1</span>
+                    User visits site → DNS resolves to CloudFront
+                </div>
+                <div class="step step-1">
+                    <span class="step-num">2</span>
+                    Browser loads maffindi.html from S3 via CloudFront
+                </div>
+                <div class="step step-2">
+                    <span class="step-num">3</span>
+                    JS fetch() → Lambda Function URL
+                </div>
+                <div class="step step-3">
+                    <span class="step-num">4</span>
+                    Lambda increments count in DynamoDB
+                </div>
+                <div class="step step-4">
+                    <span class="step-num">5</span>
+                    Returns JSON → Browser displays visitor count
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <h3 class="section-title"><i class="fas fa-layer-group"></i> Technology Stack</h3>
+            <div class="tech-tags">
+                <span class="tag tag-html"><i class="fab fa-html5"></i> HTML5 / CSS3</span>
+                <span class="tag tag-html"><i class="fab fa-js"></i> JavaScript (fetch API)</span>
+                <span class="tag tag-python"><i class="fab fa-python"></i> Python 3.9 (Lambda)</span>
+                <span class="tag tag-aws"><i class="fab fa-aws"></i> AWS Lambda</span>
+                <span class="tag tag-aws"><i class="fab fa-aws"></i> Amazon DynamoDB</span>
+                <span class="tag tag-aws"><i class="fab fa-aws"></i> Amazon CloudFront</span>
+                <span class="tag tag-aws"><i class="fab fa-aws"></i> Amazon S3</span>
+                <span class="tag tag-terraform"><i class="fas fa-code"></i> Terraform</span>
+            </div>
+
+            <!-- Key Features -->
+            <h3 class="section-title"><i class="fas fa-star"></i> Key Features</h3>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <h4>🌐 Serverless Static Hosting</h4>
+                    <p>S3 bucket with CloudFront CDN for low-latency global content delivery. OAC ensures only CloudFront can access the bucket.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Real-time Visitor Counter</h4>
+                    <p>Lambda Function URL invoked via JavaScript fetch(). Uses DynamoDB atomic counters for accurate, concurrent-safe increments.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🏗️ Infrastructure as Code</h4>
+                    <p>Entire AWS infrastructure defined in Terraform (main.tf) — version-controlled, repeatable, and auditable deployments.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🌙 Dark Mode Support</h4>
+                    <p>Built-in dark/light theme toggle with CSS custom properties, persisted in localStorage.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 Responsive Design</h4>
+                    <p>Mobile-first layout with CSS Grid, flexbox, and media queries for optimal viewing on all screen sizes.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔒 Security Best Practices</h4>
+                    <p>CloudFront OAC (no public S3 access), Lambda execution via Function URL with IAM roles, no hardcoded credentials.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Infrastructure Detail -->
+        <div id="infra" class="tab-content">
+
+            <div class="info-card">
+                <h4><i class="fas fa-code-branch"></i> Infrastructure Components (Terraform)</h4>
+                <p>The entire infrastructure is defined in <code>main.tf</code> and provisioned with <code>terraform apply</code>. Resources are created in the <strong>ap-southeast-1</strong> (Singapore) region.</p>
+            </div>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    %%{init: {'theme': 'dark', 'themeVariables': { 'fontFamily': 'Poppins', 'primaryColor': '#1e293b', 'primaryTextColor': '#f8fafc', 'primaryBorderColor': '#334155', 'lineColor': '#60a5fa', 'secondaryColor': '#0f172a', 'tertiaryColor': '#1e293b'}}}%%
+                    graph LR
+                        subgraph "🏗️ Terraform Resources (main.tf)"
+                            direction TB
+                            S3B["aws_s3_bucket<br/>maffindi-cv-website-{suffix}"]
+                            S3O["aws_s3_object<br/>maffindi.html + my pic.jpg"]
+                            OAC2["aws_cloudfront_origin_access_control"]
+                            S3P["aws_s3_bucket_policy<br/>Allow CloudFront"]
+                            CF2["aws_cloudfront_distribution<br/>root: maffindi.html"]
+                            DDB2["aws_dynamodb_table<br/>VisitorCount"]
+                            IAMR["aws_iam_role<br/>lambda_role"]
+                            IAMP["aws_iam_role_policy<br/>DynamoDB + Logs"]
+                            LAMBDA["aws_lambda_function<br/>VisitorCounterFunction<br/>Runtime: python3.9"]
+                            LFU2["aws_lambda_function_url<br/>Auth: NONE"]
+                            PERM["aws_lambda_permission<br/>Public Access"]
+                        end
+
+                        S3B --> S3O
+                        S3B --> S3P
+                        S3P --> CF2
+                        OAC2 --> CF2
+                        S3B --> CF2
+                        DDB2 --> IAMP
+                        IAMR --> IAMP
+                        IAMR --> LAMBDA
+                        LAMBDA --> LFU2
+                        LAMBDA --> PERM
+
+                        style S3B fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style S3O fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style OAC2 fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style S3P fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style CF2 fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style DDB2 fill:#1e1e2e,stroke:#3b48cc,color:#818cf8
+                        style IAMR fill:#1e1e2e,stroke:#34d399,color:#6ee7b7
+                        style IAMP fill:#1e1e2e,stroke:#34d399,color:#6ee7b7
+                        style LAMBDA fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                        style LFU2 fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                        style PERM fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                </div>
+            </div>
+
+            <h3 class="section-title"><i class="fas fa-cubes"></i> Resource Breakdown</h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.9rem; margin-bottom:20px;">
+                    <thead>
+                        <tr style="background:#f1f5f9; border-bottom:2px solid #e2e8f0;">
+                            <th style="padding:10px 12px; text-align:left;">Resource</th>
+                            <th style="padding:10px 12px; text-align:left;">Type</th>
+                            <th style="padding:10px 12px; text-align:left;">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">S3 Bucket</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">Storage</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">Hosts static files (maffindi.html, my pic.jpg)</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">CloudFront</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">CDN</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">Global content delivery with HTTPS, OAC for security</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">DynamoDB</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">NoSQL</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">VisitorCount table, PAY_PER_REQUEST billing</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">IAM Role</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">Security</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">Lambda execution role with DynamoDB & CloudWatch permissions</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">Lambda</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">Compute</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">Python 3.9 function with Function URL (public endpoint)</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px 12px; font-weight:600;">Lambda URL</td>
+                            <td style="padding:10px 12px;"><span class="tag tag-aws">Endpoint</span></td>
+                            <td style="padding:10px 12px; color:var(--text-gray);">Public HTTPS endpoint with CORS enabled for browser access</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: CI/CD Pipeline -->
+        <div id="cicd" class="tab-content">
+
+            <div class="info-card">
+                <h4><i class="fas fa-arrows-rotate"></i> CI/CD & Development Workflow</h4>
+                <p>The project is developed locally, version-controlled with Git/GitHub, and infrastructure is deployed via Terraform. The CV references experience with GitLab, Jenkins, and GitHub Actions for CI/CD pipelines.</p>
+            </div>
+
+            <div class="diagram-container">
+                <div class="mermaid">
+                    %%{init: {'theme': 'dark', 'themeVariables': { 'fontFamily': 'Poppins', 'primaryColor': '#1e293b', 'primaryTextColor': '#f8fafc', 'primaryBorderColor': '#334155', 'lineColor': '#60a5fa', 'secondaryColor': '#0f172a', 'tertiaryColor': '#1e293b'}}}%%
+                    graph LR
+                        subgraph "💻 Development"
+                            VC["VS Code"]
+                            HTML["maffindi.html<br/>(CV Page)"]
+                            TF2["main.tf<br/>(IaC definition)"]
+                            PY["visitor_counter.py<br/>(Lambda code)"]
+                        end
+
+                        subgraph "📤 Version Control"
+                            GIT["git add .<br/>git commit"]
+                            GH["GitHub<br/>fendi-321/my-cv-project"]
+                        end
+
+                        subgraph "🚀 Deployment"
+                            TF3["terraform init"]
+                            TF4["terraform plan"]
+                            TF5["terraform apply"]
+                        end
+
+                        subgraph "☁️ AWS Production"
+                            S3C["S3 + CloudFront<br/>Static Site"]
+                            LAMBDA2["Lambda + DynamoDB<br/>Visitor Counter"]
+                        end
+
+                        VC --> GIT
+                        HTML --> GIT
+                        TF2 --> GIT
+                        PY --> GIT
+                        GIT --> GH
+                        GH --> TF3
+                        TF3 --> TF4
+                        TF4 --> TF5
+                        TF5 --> S3C
+                        TF5 --> LAMBDA2
+
+                        style VC fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                        style HTML fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                        style TF2 fill:#1e1e2e,stroke:#a855f7,color:#c084fc
+                        style PY fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                        style GIT fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                        style GH fill:#1e293b,stroke:#6366f1,color:#a5b4fc
+                        style TF3 fill:#1e1e2e,stroke:#a855f7,color:#c084fc
+                        style TF4 fill:#1e1e2e,stroke:#a855f7,color:#c084fc
+                        style TF5 fill:#1e1e2e,stroke:#a855f7,color:#c084fc
+                        style S3C fill:#1e293b,stroke:#ff9900,color:#fbbf24
+                        style LAMBDA2 fill:#1e1e2e,stroke:#ff9900,color:#fbbf24
+                </div>
+            </div>
+
+            <h3 class="section-title"><i class="fas fa-cog"></i> Deployment Commands</h3>
+            <div class="grid-3">
+                <div class="feature-card">
+                    <h4>1. Terraform Init</h4>
+                    <code style="display:block;background:#0f172a;color:#22d3ee;padding:8px;border-radius:6px;font-size:0.8rem;margin-top:6px;">terraform init</code>
+                    <p style="margin-top:6px;">Initializes Terraform, downloads provider plugins for AWS.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>2. Terraform Plan</h4>
+                    <code style="display:block;background:#0f172a;color:#22d3ee;padding:8px;border-radius:6px;font-size:0.8rem;margin-top:6px;">terraform plan</code>
+                    <p style="margin-top:6px;">Previews all infrastructure changes before applying.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>3. Terraform Apply</h4>
+                    <code style="display:block;background:#0f172a;color:#22d3ee;padding:8px;border-radius:6px;font-size:0.8rem;margin-top:6px;">terraform apply -auto-approve</code>
+                    <p style="margin-top:6px;">Provisions all AWS resources — S3, CloudFront, Lambda, DynamoDB, IAM.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:8px 0 16px;">
+
+        <!-- Quick Stats -->
+        <h3 class="section-title"><i class="fas fa-chart-bar"></i> Architecture at a Glance</h3>
+        <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+            <div style="text-align:center;padding:16px;background:#f0f9ff;border-radius:10px;">
+                <div style="font-size:2rem;font-weight:700;color:var(--accent);">5</div>
+                <div style="font-size:0.85rem;color:var(--text-gray);">AWS Services</div>
+            </div>
+            <div style="text-align:center;padding:16px;background:#f0fdf4;border-radius:10px;">
+                <div style="font-size:2rem;font-weight:700;color:var(--green);">10</div>
+                <div style="font-size:0.85rem;color:var(--text-gray);">Terraform Resources</div>
+            </div>
+            <div style="text-align:center;padding:16px;background:#fffbeb;border-radius:10px;">
+                <div style="font-size:2rem;font-weight:700;color:var(--orange);">5</div>
+                <div style="font-size:0.85rem;color:var(--text-gray);">Lambda Log Lines</div>
+            </div>
+            <div style="text-align:center;padding:16px;background:#f5f3ff;border-radius:10px;">
+                <div style="font-size:2rem;font-weight:700;color:var(--purple);">1</div>
+                <div style="font-size:0.85rem;color:var(--text-gray);">Terraform Module</div>
+            </div>
+            <div style="text-align:center;padding:16px;background:#fce7f3;border-radius:10px;">
+                <div style="font-size:2rem;font-weight:700;color:var(--pink);">3</div>
+                <div style="font-size:0.85rem;color:var(--text-gray);">Request Flow Steps</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>Generated from project source · <a href="https://github.com/fendi-321/my-cv-project" target="_blank"><i class="fab fa-github"></i> GitHub</a></span>
+        <a href="maffindi.html"><i class="fas fa-arrow-left"></i> Back to CV</a>
+    </div>
+</div>
+
+<script>
+    function switchTab(event, tabId) {
+        // Remove active from all tabs and contents
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Activate clicked tab
+        event.currentTarget.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+            fontFamily: 'Poppins, sans-serif',
+            primaryColor: '#1e293b',
+            primaryTextColor: '#f8fafc',
+            primaryBorderColor: '#334155',
+            lineColor: '#60a5fa',
+            secondaryColor: '#0f172a',
+            tertiaryColor: '#1e293b',
+            nodeBorder: '#475569',
+            clusterBkg: '#0f172a',
+            clusterBorder: '#334155'
+        },
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis'
+        }
+    });
+</script>
+</body>
+</html>
