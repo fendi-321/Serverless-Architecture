@@ -164,6 +164,14 @@ resource "aws_iam_instance_profile" "cv_app_instance_profile" {
   role = aws_iam_role.cv_app_ec2_role.name
 }
 
+# Allow browser-based access via AWS Systems Manager Session Manager
+# (no need to open port 22 / no SSH key required from the console)
+resource "aws_iam_role_policy_attachment" "cv_app_ssm_policy" {
+  role       = aws_iam_role.cv_app_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+
 # =====================================================
 # S3 Bucket for DB backups
 # =====================================================
