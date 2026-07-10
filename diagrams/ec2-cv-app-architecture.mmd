@@ -1,0 +1,55 @@
+graph TB
+    subgraph "👤 User Layer"
+        Browser["🌐 User Browser"]
+        Admin["🧑‍💻 Admin (You)"]
+    end
+
+    subgraph "☁️ AWS Cloud (ap-southeast-1)"
+        subgraph "🏗️ Networking (Custom VPC)"
+            VPC["VPC<br/>10.20.0.0/16"]
+            Subnet["Public Subnet<br/>10.20.1.0/24"]
+            IGW["Internet Gateway"]
+            RT["Route Table<br/>0.0.0.0/0 → IGW"]
+        end
+
+        subgraph "🖥️ Compute"
+            EIP["Elastic IP<br/>18.138.41.41"]
+            SG["Security Group<br/>80/443: Public<br/>22: My IP only"]
+            EC2["EC2 t3.micro<br/>Amazon Linux 2023<br/>Apache + PHP-FPM + MariaDB"]
+        end
+
+        subgraph "🔐 Access & Identity"
+            SSM["Systems Manager<br/>Session Manager"]
+            IAMRole["IAM Role<br/>cv-app-ec2-role"]
+        end
+
+        subgraph "🗄️ Backup Storage"
+            S3Backup["S3 Bucket<br/>cv-app-db-backups-*"]
+            Timer["systemd Timer<br/>Nightly mysqldump"]
+        end
+    end
+
+    subgraph "🔧 Source Control & Deploy"
+        GitHub["GitHub Repo<br/>Serverless-Architecture"]
+        Redeploy["redeploy.sh<br/>one-command deploy"]
+    end
+
+    Admin -->|"SSH (.pem key)"| EC2
+    Admin -->|"Browser Session"| SSM
+    SSM -.->|"IAM auth, no open port"| EC2
+    Browser -->|"HTTP :80"| EIP
+    EIP --> EC2
+    EC2 -->|"belongs to"| Subnet
+    Subnet -->|"belongs to"| VPC
+    Subnet -->|"routes via"| RT
+    RT --> IGW
+    IGW --> VPC
+    SG -.->|"firewall"| EC2
+    IAMRole -.->|"attached to"| EC2
+    IAMRole -->|"AmazonSSMManagedInstanceCore"| SSM
+    IAMRole -->|"s3:PutObject"| S3Backup
+    Timer -->|"runs on"| EC2
+    Timer -->|"uploads dump"| S3Backup
+    GitHub -->|"git clone / pull"| EC2
+    Redeploy -->|"pulls + deploys"| EC2
+    Admin -->|"git push"| GitHub
