@@ -13,7 +13,8 @@ UPDATE profile SET
     linkedin_url = 'https://www.linkedin.com/in/maffindi/',
     website_url = 'https://github.com/fendi-321',
     profile_image = 'my_pic.jpg',
-    summary = 'With 13 years of working experiences in IT environment and 3 years in Cloud Operation. A key team player with relevant aptitude and positive attitude. Proactively seeking to upskill and upgrade in Information Technology field. To involve in new projects to broaden skills, knowledge and make positive contributions.'
+    summary = 'With more than ~13 years of working experiences in IT environment and 5 years in Cloud Operation. A key team player with relevant aptitude and positive attitude. Proactively seeking to upskill and upgrade in Information Technology field. To involve in new projects to broaden skills, knowledge and make positive contributions.'
+
 WHERE id = 1;
 
 -- =====================================================
