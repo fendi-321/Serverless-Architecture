@@ -9,7 +9,8 @@ echo "==> Updating system packages"
 dnf update -y
 
 echo "==> Installing Apache, PHP, MariaDB, Git"
-dnf install -y httpd php php-cli php-pdo php-mysqlnd php-mbstring php-xml php-gd php-json git mariadb105-server unzip
+dnf install -y httpd php php-cli php-pdo php-mysqlnd php-mbstring php-xml php-gd php-json git mariadb105-server unzip rsync
+
 
 echo "==> Starting services"
 systemctl enable --now mariadb
