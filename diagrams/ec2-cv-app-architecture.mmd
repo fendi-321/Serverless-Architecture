@@ -6,17 +6,18 @@ graph TB
 
     subgraph "☁️ AWS Cloud (ap-southeast-1)"
         subgraph "🏗️ Networking (Custom VPC)"
-            VPC["VPC<br/>10.20.0.0/16"]
-            Subnet["Public Subnet<br/>10.20.1.0/24"]
+            VPC["VPC"]
+            Subnet["Public Subnet"]
             IGW["Internet Gateway"]
-            RT["Route Table<br/>0.0.0.0/0 → IGW"]
+            RT["Route Table"]
         end
 
         subgraph "🖥️ Compute"
-            EIP["Elastic IP<br/>18.138.41.41"]
-            SG["Security Group<br/>80/443: Public<br/>22: My IP only"]
+            EIP["Elastic IP"]
+            SG["Security Group"]
             EC2["EC2 t3.micro<br/>Amazon Linux 2023<br/>Apache + PHP-FPM + MariaDB"]
         end
+
 
         subgraph "🔐 Access & Identity"
             SSM["Systems Manager<br/>Session Manager"]
@@ -37,7 +38,8 @@ graph TB
     Admin -->|"SSH (.pem key)"| EC2
     Admin -->|"Browser Session"| SSM
     SSM -.->|"IAM auth, no open port"| EC2
-    Browser -->|"HTTP :80"| EIP
+    Browser -->|"HTTP Request"| EIP
+
     EIP --> EC2
     EC2 -->|"belongs to"| Subnet
     Subnet -->|"belongs to"| VPC
