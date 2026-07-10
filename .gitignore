@@ -16,3 +16,7 @@ terraform.tfstate.backup
 
 # Python
 __pycache__/
+cv_temp_key
+cv_temp_key.pub
+fix_remote.sh
+*.tfplan

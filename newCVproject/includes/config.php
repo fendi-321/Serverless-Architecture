@@ -17,19 +17,26 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // =====================================================
 // Database Configuration
+// (Reads from environment variables when available, e.g. on AWS EC2/
+// Elastic Beanstalk. Falls back to local dev defaults otherwise.)
 // =====================================================
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'online_resume_system');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'online_resume_system');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // =====================================================
 // Application Configuration
+// (APP_URL auto-detects protocol + host so it works both locally
+// and once deployed behind any public domain/IP without edits.)
 // =====================================================
+$__scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$__host   = $_SERVER['HTTP_HOST'] ?? '127.0.0.1:9090';
 define('APP_NAME', 'Online Resume System');
-define('APP_URL', 'http://127.0.0.1:9090');
+define('APP_URL', getenv('APP_URL') ?: ($__scheme . '://' . $__host));
 define('APP_VERSION', '1.0.0');
+
 
 // =====================================================
 // Path Configuration
