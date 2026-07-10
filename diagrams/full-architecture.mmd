@@ -1,0 +1,42 @@
+graph TB
+    subgraph "👤 User Layer"
+        Browser["🌐 User Browser"]
+    end
+    subgraph "☁️ AWS Cloud (ap-southeast-1)"
+        subgraph "📦 Content Delivery"
+            CF["CloudFront CDN"]
+            OAC["Origin Access Control"]
+            S3["S3 Bucket<br/>maffindi.html<br/>my pic.jpg"]
+        end
+        subgraph "⚡ Serverless Backend"
+            LFU["Lambda Function URL"]
+            Lambda["AWS Lambda<br/>visitor_counter.py<br/>(Python 3.9)"]
+        end
+        subgraph "🗄️ Data & Monitoring"
+            DDB["DynamoDB<br/>Table: VisitorCount<br/>PK: id, Attr: visits"]
+            CW["CloudWatch Logs"]
+        end
+        subgraph "🏗️ Infrastructure as Code"
+            TF["Terraform<br/>main.tf"]
+            IAM["IAM Role + Policy<br/>Lambda Execution"]
+        end
+    end
+    subgraph "🔧 CI/CD Pipeline"
+        Git["Git / GitHub"]
+        Local["Local Dev<br/>(VS Code)"]
+    end
+    Browser -->|"HTTPS Request"| CF
+    CF -->|"Fetch from Origin"| OAC
+    OAC -->|"s3:GetObject"| S3
+    Browser -->|"1. fetch() GET"| LFU
+    LFU -->|"Invoke"| Lambda
+    Lambda -->|"2. UpdateItem + GetItem"| DDB
+    Lambda -->|"3. Log execution"| CW
+    Lambda -->|"4. JSON { count }"| LFU
+    TF -->|"Provision"| S3
+    TF -->|"Provision"| CF
+    TF -->|"Provision"| Lambda
+    TF -->|"Provision"| DDB
+    TF -->|"Create"| IAM
+    Local -->|"git push"| Git
+    Git -->|"Deploy"| TF

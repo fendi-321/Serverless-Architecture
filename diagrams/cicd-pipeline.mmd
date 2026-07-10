@@ -1,0 +1,30 @@
+graph LR
+    subgraph "💻 Development"
+        VC["VS Code"]
+        HTML["maffindi.html<br/>(CV Page)"]
+        TF2["main.tf<br/>(IaC definition)"]
+        PY["visitor_counter.py<br/>(Lambda code)"]
+    end
+    subgraph "📤 Version Control"
+        GIT["git add .<br/>git commit"]
+        GH["GitHub<br/>fendi-321/my-cv-project"]
+    end
+    subgraph "🚀 Deployment"
+        TF3["terraform init"]
+        TF4["terraform plan"]
+        TF5["terraform apply"]
+    end
+    subgraph "☁️ AWS Production"
+        S3C["S3 + CloudFront<br/>Static Site"]
+        LAMBDA2["Lambda + DynamoDB<br/>Visitor Counter"]
+    end
+    VC --> GIT
+    HTML --> GIT
+    TF2 --> GIT
+    PY --> GIT
+    GIT --> GH
+    GH --> TF3
+    TF3 --> TF4
+    TF4 --> TF5
+    TF5 --> S3C
+    TF5 --> LAMBDA2

@@ -1,0 +1,25 @@
+graph LR
+    subgraph "🏗️ Terraform Resources (main.tf)"
+        direction TB
+        S3B["aws_s3_bucket<br/>maffindi-cv-website-{suffix}"]
+        S3O["aws_s3_object<br/>maffindi.html + my pic.jpg"]
+        OAC2["aws_cloudfront_origin_access_control"]
+        S3P["aws_s3_bucket_policy<br/>Allow CloudFront"]
+        CF2["aws_cloudfront_distribution<br/>root: maffindi.html"]
+        DDB2["aws_dynamodb_table<br/>VisitorCount"]
+        IAMR["aws_iam_role<br/>lambda_role"]
+        IAMP["aws_iam_role_policy<br/>DynamoDB + Logs"]
+        LAMBDA["aws_lambda_function<br/>VisitorCounterFunction<br/>Runtime: python3.9"]
+        LFU2["aws_lambda_function_url<br/>Auth: NONE"]
+        PERM["aws_lambda_permission<br/>Public Access"]
+    end
+    S3B --> S3O
+    S3B --> S3P
+    S3P --> CF2
+    OAC2 --> CF2
+    S3B --> CF2
+    DDB2 --> IAMP
+    IAMR --> IAMP
+    IAMR --> LAMBDA
+    LAMBDA --> LFU2
+    LAMBDA --> PERM
