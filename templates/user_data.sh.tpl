@@ -38,13 +38,19 @@ if [ -f /var/www/html/update_my_cv.sql ]; then
   mysql -u root online_resume_system < /var/www/html/update_my_cv.sql
 fi
 
-echo "==> Configuring Apache environment variables for the app"
-cat > /etc/httpd/conf.d/cvapp-env.conf <<EOF
-SetEnv DB_HOST 127.0.0.1
-SetEnv DB_NAME online_resume_system
-SetEnv DB_USER cvapp
-SetEnv DB_PASS ${db_password}
+echo "==> Configuring PHP-FPM environment variables for the app"
+# NOTE: PHP runs via php-fpm on Amazon Linux 2023, not mod_php, so
+# Apache's SetEnv does NOT reach PHP. Env vars must be set in the
+# php-fpm pool config instead.
+cat >> /etc/php-fpm.d/www.conf <<EOF
+
+env[DB_HOST] = 127.0.0.1
+env[DB_NAME] = online_resume_system
+env[DB_USER] = cvapp
+env[DB_PASS] = ${db_password}
 EOF
+systemctl restart php-fpm
+
 
 echo "==> Setting permissions"
 chown -R apache:apache /var/www/html
