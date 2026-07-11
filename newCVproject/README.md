@@ -127,11 +127,4 @@ Online Resume System/
 ## License
 
 This project is open source and available for personal and commercial use.
-
-## Author
-
-Developed by **Kiyo Software TechLab**
-
 ---
-
-*Built with care during New Year 2026*
