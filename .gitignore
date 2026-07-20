@@ -20,3 +20,6 @@ cv_temp_key
 cv_temp_key.pub
 fix_remote.sh
 *.tfplan
+
+# Redundant subfolder - content moved to project root
+newCVproject/
